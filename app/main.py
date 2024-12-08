@@ -35,16 +35,6 @@ data = load_data(selected_country)
 
 # Show the first few rows of the data
 st.write(data.head())
-
-# Clean data: Handling anomalies and missing values (Comments column, etc.)
-if 'Comments' in data.columns:
-    data['Comments'].fillna('No Comment', inplace=True)
-else:
-    st.warning("No 'Comments' column found in the dataset.")
-
-# Drop rows with missing key sensor readings (like GHI, DNI, DHI, etc.)
-data.dropna(subset=['ghi', 'dni', 'dhi', 'tamb', 'moda', 'modb'], how='all', inplace=True)
-
 # Calculate KPIs
 average_ghi = data['ghi'].mean()
 max_ghi = data['ghi'].max()
