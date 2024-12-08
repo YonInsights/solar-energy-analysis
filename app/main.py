@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import os
 import matplotlib.pyplot as plt
+import seaborn as sns
 
 # Dashboard title
 st.title("Solar Energy Analysis Dashboard")
@@ -87,6 +88,30 @@ plt.tight_layout(rect=[0, 0, 1, 0.96])
 
 # Display the plot in the Streamlit app
 st.pyplot(fig)
+
+# Correlation Matrix
+st.subheader("Correlation Matrix")
+
+# Select columns for correlation analysis
+correlation_columns = ['ghi', 'dni', 'dhi', 'moda', 'modb']
+correlation_data = data[correlation_columns]
+
+# Calculate correlation matrix
+corr_matrix = correlation_data.corr()
+
+# Display the correlation matrix as a heatmap
+plt.figure(figsize=(8, 6))
+sns.heatmap(corr_matrix, annot=True, cmap='coolwarm', fmt='.2f', cbar=True, linewidths=0.5, linecolor='black')
+plt.title(f"Correlation Matrix for {selected_country} (Solar Radiation & Temperature)", fontsize=14)
+st.pyplot(plt)
+
+# Pair Plot
+st.subheader("Pair Plot for Solar Components and Temperature")
+
+# Plot pair plot for selected columns
+sns.pairplot(correlation_data, kind='scatter', diag_kind='kde', hue='ghi', palette='Blues')
+plt.suptitle(f"Pair Plot for {selected_country} (Solar Radiation & Temperature)", fontsize=14)
+st.pyplot(plt)
 
 # Impact of Cleaning on ModA and ModB
 st.subheader("Impact of Cleaning on Sensor Readings (ModA and ModB)")
