@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import os
+import matplotlib.pyplot as plt
 
 # Dashboard title
 st.title("Solar Energy Analysis Dashboard")
@@ -32,3 +33,32 @@ data = load_data(selected_country)
 
 # Show the first few rows of the data
 st.write(data.head())
+
+# Time Series Plot
+st.subheader("Time Series for Solar Components")
+
+# Create subplots for GHI, DNI, DHI, and Tamb
+fig, axes = plt.subplots(2, 2, figsize=(12, 8))
+fig.suptitle(f"Time Series Analysis for {selected_country}", fontsize=16)
+
+# Plot GHI
+data[['ghi']].plot(ax=axes[0, 0], title="Global Horizontal Irradiance (GHI)", legend=False)
+axes[0, 0].set_ylabel('Irradiance (W/m²)')
+
+# Plot DNI
+data[['dni']].plot(ax=axes[0, 1], title="Direct Normal Irradiance (DNI)", legend=False)
+axes[0, 1].set_ylabel('Irradiance (W/m²)')
+
+# Plot DHI
+data[['dhi']].plot(ax=axes[1, 0], title="Diffuse Horizontal Irradiance (DHI)", legend=False)
+axes[1, 0].set_ylabel('Irradiance (W/m²)')
+
+# Plot Tamb
+data[['tamb']].plot(ax=axes[1, 1], title="Ambient Temperature (Tamb)", legend=False)
+axes[1, 1].set_ylabel('Temperature (°C)')
+
+# Adjust layout
+plt.tight_layout(rect=[0, 0, 1, 0.96])
+
+# Display the plot in the Streamlit app
+st.pyplot(fig)
