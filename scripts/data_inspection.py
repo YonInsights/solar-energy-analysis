@@ -1,32 +1,64 @@
 import pandas as pd
 
-# Load the data
-benin_data = pd.read_csv(r'D:\Kifya_training\Week 0\data\benin-malanville.csv')
-sierraleone_data = pd.read_csv(r'D:\Kifya_training\Week 0\data\sierraleone-bumbuna.csv')
-togo_data = pd.read_csv(r'D:\Kifya_training\Week 0\data\togo-dapaong_qc.csv')
+# File paths
+data_paths = {
+    "Benin": r"D:\Kifya_training\Week 0\solar-energy-analysis\data\benin-malanville.csv",
+    "Sierra Leone": r"D:\Kifya_training\Week 0\solar-energy-analysis\data\sierraleone-bumbuna.csv",
+    "Togo": r"D:\Kifya_training\Week 0\solar-energy-analysis\data\togo-dapaong_qc.csv"
+}
 
-# Display the first few rows of each dataset
-print("Benin Data:")
-print(benin_data.head())
+# Function to inspect the dataset
+def inspect_dataset(file_path, country_name):
+    print(f"Inspecting data for {country_name}...\n")
 
-print("\nSierra Leone Data:")
-print(sierraleone_data.head())
+    # Load the dataset
+    data = pd.read_csv(file_path)
+    
+    # Display the first few rows
+    print(f"{country_name} - First 5 rows:")
+    print(data.head(), "\n")
 
-print("\nTogo Data:")
-print(togo_data.head())
+    # Check column names
+    print(f"{country_name} - Column Names:")
+    print(data.columns, "\n")
+    
+    # Check for missing values
+    print(f"{country_name} - Missing Values:")
+    print(data.isnull().sum(), "\n")
+    
+    # Check for duplicate rows
+    duplicates = data.duplicated().sum()
+    print(f"{country_name} - Duplicate Rows: {duplicates}\n")
+    
+    # Check data types and non-null counts
+    print(f"{country_name} - Data Types and Non-Null Counts:")
+    print(data.info(), "\n")
+    
+    # Summary statistics for numerical columns
+    print(f"{country_name} - Summary Statistics:")
+    print(data.describe(), "\n")
 
-# Check the data types and summary statistics
-print("\nBenin Data Info:")
-print(benin_data.info())
-print("\nBenin Data Description:")
-print(benin_data.describe())
+    # Investigate potential outliers in key numerical columns (e.g., GHI, DNI, Tamb)
+    key_columns = ['GHI', 'DNI', 'DHI', 'Tamb', 'RH', 'WS', 'BP']
+    for col in key_columns:
+        if col in data.columns:
+            outliers = data[col][(data[col] < data[col].quantile(0.01)) | (data[col] > data[col].quantile(0.99))]
+            print(f"{country_name} - Outliers in {col}:")
+            print(outliers.describe(), "\n")
+    
+    # Verify Timestamp column format
+    if 'Timestamp' in data.columns:
+        try:
+            data['Timestamp'] = pd.to_datetime(data['Timestamp'])
+            print(f"{country_name} - Timestamp column successfully converted to datetime.\n")
+        except Exception as e:
+            print(f"{country_name} - Error converting Timestamp column to datetime: {e}\n")
+    else:
+        print(f"{country_name} - No Timestamp column found.\n")
+    
+    print("=" * 50)
 
-print("\nSierra Leone Data Info:")
-print(sierraleone_data.info())
-print("\nSierra Leone Data Description:")
-print(sierraleone_data.describe())
-
-print("\nTogo Data Info:")
-print(togo_data.info())
-print("\nTogo Data Description:")
-print(togo_data.describe())
+# Inspect datasets for each country
+benin_data = inspect_dataset(data_paths["Benin"], "Benin")
+sierraleone_data = inspect_dataset(data_paths["Sierra Leone"], "Sierra Leone")
+togo_data = inspect_dataset(data_paths["Togo"], "Togo")
