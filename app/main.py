@@ -62,3 +62,34 @@ plt.tight_layout(rect=[0, 0, 1, 0.96])
 
 # Display the plot in the Streamlit app
 st.pyplot(fig)
+
+# Impact of Cleaning on ModA and ModB
+st.subheader("Impact of Cleaning on Sensor Readings (ModA and ModB)")
+
+# Filter the data for cleaned and uncleaned data
+cleaned_data = data[data['cleaning'] == 1]
+uncleaned_data = data[data['cleaning'] == 0]
+
+# Create subplots for ModA and ModB
+fig, axes = plt.subplots(2, 1, figsize=(10, 8))
+fig.suptitle(f"Impact of Cleaning on ModA and ModB for {selected_country}", fontsize=16)
+
+# Plot ModA
+axes[0].plot(cleaned_data.index, cleaned_data['moda'], label='Cleaned', color='blue')
+axes[0].plot(uncleaned_data.index, uncleaned_data['moda'], label='Uncleaned', color='orange')
+axes[0].set_title("ModA Sensor Readings")
+axes[0].set_ylabel('ModA Value')
+axes[0].legend()
+
+# Plot ModB
+axes[1].plot(cleaned_data.index, cleaned_data['modb'], label='Cleaned', color='blue')
+axes[1].plot(uncleaned_data.index, uncleaned_data['modb'], label='Uncleaned', color='orange')
+axes[1].set_title("ModB Sensor Readings")
+axes[1].set_ylabel('ModB Value')
+axes[1].legend()
+
+# Adjust layout
+plt.tight_layout(rect=[0, 0, 1, 0.96])
+
+# Display the plot in the Streamlit app
+st.pyplot(fig)
